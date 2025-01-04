@@ -1,15 +1,23 @@
+const cors=require("cors");
 const express = require('express');
 const { resolve } = require('path');
-
 const app = express();
-const port = 3010;
+const {getEmployees,getEmployeeById}=require("./controllers/index.js");
 
-app.use(express.static('static'));
+app.use(cors());
+app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
-});
+app.get("/employees",async(req, res)=>{
+const employees=await getEmployees();
+res.status(200).json({employees});
+})
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-});
+app.get("/employees/details/:id",async(req, res)=>{
+const id=parseInt(req.params.id);
+const employee=await getEmployeeById(id);
+res.status(200).json({employee});
+})
+
+module.exports={app}
+
+
